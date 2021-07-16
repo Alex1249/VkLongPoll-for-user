@@ -1,37 +1,13 @@
-import vk_api, traceback, random, time
+import vk_api, traceback, time
 from datetime import datetime
 from vk_api.longpoll import VkEventType, VkLongPoll
 
-token='token'
+token='' # токен
 
-vk=vk_api.VkApi(token=token)#авторизовываем админа
-longpoll=VkLongPoll(vk)
+_vk_=vk_api.VkApi(token=token)
+vk=_vk_.get_api()
+longpoll=VkLongPoll(_vk_)
 
-def sms(peer_id=int, message=str, attachments=None, sticker_id=None, peer_ids=None, reply_to=None, forward_messages=None, pyload=None, disable_mentions=None):
-	vk.method('messages.send',
-	{'peer_id': peer_id,
-	'peer_ids': peer_ids,
-	'message': message,
-	'attachmets': attachments,
-	'sticker_id': sticker_id,
-	'reply_to': reply_to,
-	'forward_messages': forward_messages,
-	'pyload': pyload,
-	'disable_mentions': disable_mentions,
-	'random_id': random.randint(10, 10**6)}
-	)
-	
-def  sms_edit(peer_id=int, message=str, message_id=int, attachments=None, keep_forward_messages=None):
-	r=vk.method('messages.edit',
-	{'peer_id': peer_id,
-	'message': message,
-	'message_id': message_id,
-	'attachments': attachments,
-	'keep_forward_messages': keep_forward_messages,
-	})
-	return r
-	
-	
 while True:
 	try:
 		for event in longpoll.listen():
@@ -42,9 +18,8 @@ while True:
 				message_id=event.message_id
 				if text=='.пинг':
 					pong=f'Понг лп: {abs(round(datetime.now().timestamp()-time_, 3))}'
-					sms_edit(peer_id=peer_id, message=pong, message_id=message_id)
+					vk.messages.edit(peer_id=peer_id, message=pong, message_id=message_id)
 	except:
 		print('Я падаю.')
 		traceback.print_exc()
 		time.sleep(5)
-	
