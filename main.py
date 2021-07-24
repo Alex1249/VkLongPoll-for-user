@@ -23,3 +23,4 @@ while True:
 		print('Я падаю.')
 		traceback.print_exc()
 		time.sleep(5)
+# Written with love. By Alexey Kuznetsov.
